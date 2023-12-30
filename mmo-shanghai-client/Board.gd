@@ -4,7 +4,7 @@ var rng = RandomNumberGenerator.new()
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	init_new_game(0)
+	#init_new_game(0)
 	pass # Replace with function body.
 
 
@@ -17,14 +17,14 @@ func init_new_game(seed):
 	rng.set_seed(seed)
 	var tilexyz_ary = get_new_game_tilexyz_ary()
 	var tiletype_ary = cal_new_game_tiletype_ary(seed)
-	print(tilexyz_ary.size())
-	print(tiletype_ary.size())
+	#print(tilexyz_ary.size())
+	#print(tiletype_ary.size())
 	assert(tilexyz_ary.size() == tiletype_ary.size())
 	var tile_ary_size = tilexyz_ary.size()
 	for i in range(tile_ary_size):
 		var tilexyz = tilexyz_ary[i]
 		var tiletype = tiletype_ary[i]
-		create_tile(tilexyz, tiletype)
+		$TilesTransform/Tiles.create_tile(tilexyz, tiletype)
 	#fix_tile_z_index()
 	$TilesTransform/Tiles.fix_z_index()
 	$TilesTransform.store_bound_rect()
@@ -109,15 +109,6 @@ func cal_new_game_tiletype_ary(seed):
 	ret_tiletype_ary = Common.shuffle(ret_tiletype_ary, rng)
 	
 	return ret_tiletype_ary
-
-var tile_scene = preload("res://Tile.tscn")
-
-func create_tile(tilexyz, tiletype):
-	var tile = tile_scene.instantiate()
-	tile.set_tilebase(0)
-	tile.set_tiletype(tiletype)
-	tile.set_tilexyz(tilexyz)
-	$TilesTransform/Tiles.add_child(tile)
 
 #func fix_tile_z_index():
 	#var z_tile_node_ary=Array()
