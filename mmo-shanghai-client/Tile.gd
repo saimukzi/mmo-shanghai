@@ -1,13 +1,14 @@
 extends Node2D
 
+class_name Tile
+
 #var texture0 = preload("res://import/demching-mahjong/dot/02.svg")
 #var texture0 = null
-
-static var tiletypestr_to_texture_dict = {}
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	#texture0 = load("res://import/demching-mahjong/dot/02.svg")
+	set_tilebase(0)
 	set_tiletype([0,7])
 	pass # Replace with function body.
 
@@ -16,11 +17,14 @@ func _ready():
 func _process(delta):
 	pass
 
+func set_tilebase(tilebaseid):
+	$Base.texture = Tile.get_tilebase_texture(tilebaseid)
 
 func set_tiletype(tiletype):
-	$Face.texture = get_texture(tiletype)
+	$Face.texture = Tile.get_tiletype_texture(tiletype)
 
-static func get_texture(tiletype):
+static var tiletypestr_to_texture_dict = {}
+static func get_tiletype_texture(tiletype):
 	var tiletypestr = "{0}-{1}".format(tiletype)
 	if not tiletypestr_to_texture_dict.has(tiletypestr):
 		var p0 = ""
@@ -53,3 +57,10 @@ static func get_texture(tiletype):
 		var url = "res://import/demching-mahjong/{0}/{1}.svg".format([p0,p1])
 		tiletypestr_to_texture_dict[tiletypestr] = load(url)
 	return tiletypestr_to_texture_dict[tiletypestr]
+
+static var tilebaseid_to_texture_dict = {}
+static func get_tilebase_texture(tilebaseid):
+	if not tilebaseid_to_texture_dict.has(tilebaseid):
+		var url = "res://import/demching-mahjong/tile/{0}/04.svg".format(["%02d"%tilebaseid])
+		tilebaseid_to_texture_dict[tilebaseid] = load(url)
+	return tilebaseid_to_texture_dict[tilebaseid]
