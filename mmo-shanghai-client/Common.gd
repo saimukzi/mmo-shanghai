@@ -16,3 +16,15 @@ static func shuffle(ary: Array, rng: RandomNumberGenerator):
 		ret_ary.append(ary[idx])
 	
 	return ret_ary
+
+static func dot21(mat2d: Array, ary1d: Array):
+	assert(ary1d.size() == mat2d[0].size() - 1)
+	var ret_ary = Array()
+	var ary1d_size = ary1d.size()
+	for row in mat2d:
+		var ret = 0.0
+		for i in range(ary1d.size()):
+			ret += ary1d[i] * row[i]
+		ret += row[ary1d_size]
+		ret_ary.append(ret)
+	return ret_ary

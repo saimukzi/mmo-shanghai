@@ -2,14 +2,19 @@ extends Node2D
 
 class_name Tile
 
-#var texture0 = preload("res://import/demching-mahjong/dot/02.svg")
-#var texture0 = null
+# const WIDTH = 150
+# const HEIGHT = 200
+# const SIZE = Vector2(WIDTH, HEIGHT)
+# const RECT = Rect2(-40, 0, WIDTH, HEIGHT+40)
+const POS0 = Vector2(-40, 0)
+const POS1 = Vector2(150, 200+40)
+
+var z_ref:int = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	#texture0 = load("res://import/demching-mahjong/dot/02.svg")
-	set_tilebase(0)
-	set_tiletype([0,7])
+	#set_tilebase(0)
+	#set_tiletype([0,7])
 	pass # Replace with function body.
 
 
@@ -22,6 +27,19 @@ func set_tilebase(tilebaseid):
 
 func set_tiletype(tiletype):
 	$Face.texture = Tile.get_tiletype_texture(tiletype)
+
+const TILEXYZ_TO_POS_MAT = [
+	[150,0,40,0],
+	[0,200,-40,0],
+]
+const TILEXYZ_TO_Z_MAT = [
+	[-3,4,500,0],
+]
+func set_tilexyz(tilexyz):
+	var pos_ary = Common.dot21(TILEXYZ_TO_POS_MAT, tilexyz)
+	var z_ary = Common.dot21(TILEXYZ_TO_Z_MAT, tilexyz)
+	position = Vector2(pos_ary[0], pos_ary[1])
+	z_ref = int(z_ary[0])
 
 static var tiletypestr_to_texture_dict = {}
 static func get_tiletype_texture(tiletype):

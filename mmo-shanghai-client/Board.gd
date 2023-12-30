@@ -4,6 +4,7 @@ var rng = RandomNumberGenerator.new()
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	init_new_game(0)
 	pass # Replace with function body.
 
 
@@ -16,12 +17,18 @@ func init_new_game(seed):
 	rng.set_seed(seed)
 	var tilexyz_ary = get_new_game_tilexyz_ary()
 	var tiletype_ary = cal_new_game_tiletype_ary(seed)
+	print(tilexyz_ary.size())
+	print(tiletype_ary.size())
 	assert(tilexyz_ary.size() == tiletype_ary.size())
 	var tile_ary_size = tilexyz_ary.size()
 	for i in range(tile_ary_size):
 		var tilexyz = tilexyz_ary[i]
 		var tiletype = tiletype_ary[i]
 		create_tile(tilexyz, tiletype)
+	#fix_tile_z_index()
+	$TilesTransform/Tiles.fix_z_index()
+	$TilesTransform.store_bound_rect()
+	$TilesTransform.fix_transform()
 
 func get_new_game_tilexyz_ary():
 	var z_y_x0_w_ary = [
@@ -37,20 +44,20 @@ func get_new_game_tilexyz_ary():
 		[0,3.5,0,1],
 		[0,3.5,13,2],
 
-		[1,1,4,8],
-		[1,2,4,8],
-		[1,3,4,8],
-		[1,4,4,8],
-		[1,5,4,8],
-		[1,6,4,8],
+		[1,1,4,6],
+		[1,2,4,6],
+		[1,3,4,6],
+		[1,4,4,6],
+		[1,5,4,6],
+		[1,6,4,6],
 
-		[2,2,5,6],
-		[2,3,5,6],
-		[2,4,5,6],
-		[2,5,5,6],
+		[2,2,5,4],
+		[2,3,5,4],
+		[2,4,5,4],
+		[2,5,5,4],
 
-		[3,3,6,4],
-		[3,4,6,4],
+		[3,3,6,2],
+		[3,4,6,2],
 		
 		[4,3.5,6.5,1],
 	]
@@ -62,7 +69,7 @@ func get_new_game_tilexyz_ary():
 		var w = z_y_x0_w[3]
 		for i in range(w):
 			var x = x0 + i
-			ret_tilexyz_ary.push([x,y,z])
+			ret_tilexyz_ary.append([x,y,z])
 	return ret_tilexyz_ary
 	
 
@@ -107,7 +114,15 @@ var tile_scene = preload("res://Tile.tscn")
 
 func create_tile(tilexyz, tiletype):
 	var tile = tile_scene.instantiate()
-	tile.set_tilexyz(tilexyz)
+	tile.set_tilebase(0)
 	tile.set_tiletype(tiletype)
-	$Tiles.add_child(tile)
+	tile.set_tilexyz(tilexyz)
+	$TilesTransform/Tiles.add_child(tile)
 
+#func fix_tile_z_index():
+	#var z_tile_node_ary=Array()
+	#for tile_node in $TilesTransform/Tiles.get_children():
+		#z_tile_node_ary.append([tile_node.z_ref, tile_node])
+	#z_tile_node_ary.sort()
+	#for i in range(z_tile_node_ary.size()):
+		#z_tile_node_ary[i][1].z_index = i
