@@ -1,6 +1,94 @@
-[gd_scene load_steps=2 format=3 uid="uid://d268u8xcw6l65"]
+[gd_scene load_steps=9 format=3 uid="uid://d268u8xcw6l65"]
 
 [ext_resource type="Script" path="res://Main.gd" id="1_s42dm"]
+[ext_resource type="Script" path="res://Align.gd" id="3_6tsou"]
+[ext_resource type="Script" path="res://NoPairManager.gd" id="3_wjfyf"]
+[ext_resource type="Script" path="res://PositionZero.gd" id="4_75cxo"]
+[ext_resource type="Script" path="res://ViewportSE.gd" id="4_vwc0q"]
+[ext_resource type="Script" path="res://FollowPosition.gd" id="5_grkpo"]
+[ext_resource type="Script" path="res://Scale.gd" id="6_jw4q3"]
+[ext_resource type="Texture2D" uid="uid://ufkd4i3g0w5c" path="res://assets/ui/help_btn.png" id="7_psbj6"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_s42dm")
+
+[node name="Positions" type="Node" parent="."]
+
+[node name="PositionZero" type="Node2D" parent="Positions"]
+script = ExtResource("4_75cxo")
+
+[node name="ViewportSE" type="Node2D" parent="Positions"]
+position = Vector2(1152, 648)
+script = ExtResource("4_vwc0q")
+
+[node name="MessageCenter" type="Node2D" parent="Positions" node_paths=PackedStringArray("node0", "node1")]
+position = Vector2(576, 247.536)
+script = ExtResource("3_6tsou")
+align_y = 0.382
+node0 = NodePath("../PositionZero")
+node1 = NodePath("../ViewportSE")
+
+[node name="ViewportNE" type="Node2D" parent="Positions" node_paths=PackedStringArray("node0", "node1")]
+position = Vector2(1152, 0)
+script = ExtResource("3_6tsou")
+align_x = 1.0
+align_y = 0.0
+node0 = NodePath("../PositionZero")
+node1 = NodePath("../ViewportSE")
+
+[node name="GameSlot" type="Node2D" parent="."]
+
+[node name="ControlPanel" type="Node" parent="."]
+
+[node name="Position" type="Node2D" parent="ControlPanel" node_paths=PackedStringArray("node")]
+z_index = 3000
+position = Vector2(1152, 0)
+script = ExtResource("5_grkpo")
+node = NodePath("../../Positions/ViewportNE")
+
+[node name="Scale" type="Node2D" parent="ControlPanel/Position" node_paths=PackedStringArray("node0", "node1")]
+scale = Vector2(0.9, 0.9)
+script = ExtResource("6_jw4q3")
+node0 = NodePath("../../../Positions/ViewportNE")
+node1 = NodePath("../../../Positions/ViewportSE")
+inner_value = 720.0
+
+[node name="TextureButton" type="TextureButton" parent="ControlPanel/Position/Scale"]
+offset_left = -134.444
+offset_top = 27.7778
+offset_right = -6.44443
+offset_bottom = 155.778
+scale = Vector2(0.855, 0.855)
+texture_normal = ExtResource("7_psbj6")
+
+[node name="StatusNoPair" type="Node" parent="."]
+script = ExtResource("3_wjfyf")
+
+[node name="Visible" type="Node2D" parent="StatusNoPair"]
+visible = false
+
+[node name="Position" type="Node2D" parent="StatusNoPair/Visible" node_paths=PackedStringArray("node")]
+position = Vector2(576, 247.536)
+script = ExtResource("5_grkpo")
+node = NodePath("../../../Positions/MessageCenter")
+
+[node name="Label" type="Label" parent="StatusNoPair/Visible/Position"]
+z_index = 4000
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -32.5
+offset_top = -11.5
+offset_right = 32.5
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_font_sizes/font_size = 120
+text = "NO PAIR"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="pressed" from="ControlPanel/Position/Scale/TextureButton" to="." method="_on_tips_button_pressed"]

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dvpwh5sga1f0x"
-path="res://.godot/imported/dummy_face.svg-47e35f26ecd43a20a1dec87600b2c323.ctex"
+uid="uid://7aot7arbhmc"
+path="res://.godot/imported/tips_highlight.svg-e4f25ba7b46729f222081ccd94f2ec59.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/dummy_face.svg"
-dest_files=["res://.godot/imported/dummy_face.svg-47e35f26ecd43a20a1dec87600b2c323.ctex"]
+source_file="res://assets/tile/tips_highlight.svg"
+dest_files=["res://.godot/imported/tips_highlight.svg-e4f25ba7b46729f222081ccd94f2ec59.ctex"]
 
 [params]
 

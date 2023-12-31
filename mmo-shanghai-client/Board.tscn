@@ -12,3 +12,5 @@ script = ExtResource("2_wo5kk")
 
 [node name="Tiles" type="Node2D" parent="TilesTransform"]
 script = ExtResource("3_v58dd")
+
+[connection signal="status_no_pair" from="TilesTransform/Tiles" to="." method="_on_tiles_status_no_pair"]

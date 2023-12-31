@@ -28,6 +28,7 @@ func set_tilebase(tilebaseid):
 
 var tiletype
 func set_tiletype(tiletype):
+	check_tiletype(tiletype)
 	self.tiletype = tiletype
 	$Face.texture = Tile.get_tiletype_texture(tiletype)
 
@@ -149,3 +150,14 @@ static func remove_match(tiletype0, tiletype1):
 	if tiletype0[0] == 5 and tiletype1[0] == 5: return true
 	if tiletype0[0] == 6 and tiletype1[0] == 6: return true
 	return false
+
+func set_tips_highlight(enable):
+	$TipsHighlight.visible = enable
+
+static func check_tiletype(tiletype):
+	assert(tiletype.size()==2)
+	assert(tiletype[0]<7)
+	if tiletype[0] < 3: assert(tiletype[1]<9)
+	elif tiletype[0] == 3: assert(tiletype[1]<4)
+	elif tiletype[0] == 4: assert(tiletype[1]<3)
+	else: assert(tiletype[1]<4)

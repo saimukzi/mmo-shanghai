@@ -114,6 +114,7 @@ func _on_tile_mouse_pressed(tilenode):
 		remove_tile(tilenode)
 		selected_tile = null
 		mouse_done = true
+		check_status()
 		return
 	selected_tile.set_selected(false)
 	tilenode.set_selected(true)
@@ -135,3 +136,41 @@ func remove_tile(tilenode):
 	mouseover_z_ary.erase(tilenode.z_val)
 	z_to_tilenode_dict.erase(tilenode.z_val)
 	remove_child(tilenode)
+	tilenode.queue_free()
+
+signal status_game_end(me)
+signal status_single_selectable(me)
+signal status_no_pair(me)
+
+var status = null
+
+func check_status():
+	var childnode_list = get_children()
+	if childnode_list.size() == 0:
+		status = "GAME_END"
+		print(status)
+		return
+	
+	var selectable_tilenode_ary = Array()
+	for tilenode_i in childnode_list:
+		if not get_tile_selectable(tilenode_i): continue
+		selectable_tilenode_ary.append(tilenode_i)
+	
+	if selectable_tilenode_ary.size() == 1:
+		status = "SINGLE_SELECTABLE"
+		print(status)
+		#print("SINGLE SELECTABLE")
+		return
+	
+	for i in range(selectable_tilenode_ary.size()):
+		var tilenode_i = selectable_tilenode_ary[i]
+		for j in range(i):
+			var tilenode_j = selectable_tilenode_ary[j]
+			if Tile.remove_match(tilenode_i.tiletype, tilenode_j.tiletype):
+				status = "PAIR_EXIST"
+				print(status)
+				return
+	
+	status = "NO_PAIR"
+	print(status)
+	status_no_pair.emit(self)

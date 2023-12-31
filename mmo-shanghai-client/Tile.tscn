@@ -1,11 +1,12 @@
-[gd_scene load_steps=7 format=3 uid="uid://e0qs7vkrwesb"]
+[gd_scene load_steps=8 format=3 uid="uid://e0qs7vkrwesb"]
 
 [ext_resource type="Script" path="res://Tile.gd" id="1_02o4r"]
-[ext_resource type="Texture2D" uid="uid://c28hpj8i2w3w3" path="res://assets/dummy_base.svg" id="2_l47ji"]
-[ext_resource type="Texture2D" uid="uid://dvpwh5sga1f0x" path="res://assets/dummy_face.svg" id="3_5xc8k"]
+[ext_resource type="Texture2D" uid="uid://c28hpj8i2w3w3" path="res://assets/tile/dummy_base.svg" id="2_pe3s2"]
+[ext_resource type="Texture2D" uid="uid://dvpwh5sga1f0x" path="res://assets/tile/dummy_face.svg" id="3_88h6o"]
 [ext_resource type="Texture2D" uid="uid://juxyw0otaaty" path="res://assets/tile/border/00.svg" id="4_kwjgd"]
 [ext_resource type="Texture2D" uid="uid://di1eun8pk4k4o" path="res://assets/tile/highlight/00.svg" id="4_wqfw1"]
 [ext_resource type="Texture2D" uid="uid://cajgw0y5k51qu" path="res://assets/tile/selected.svg" id="5_fr1s8"]
+[ext_resource type="Texture2D" uid="uid://7aot7arbhmc" path="res://assets/tile/tips_highlight.svg" id="5_jimar"]
 
 [node name="Tile" type="Node2D"]
 script = ExtResource("1_02o4r")
@@ -14,16 +15,23 @@ script = ExtResource("1_02o4r")
 position = Vector2(55, 120)
 rotation = 4.71239
 scale = Vector2(-1, 1)
-texture = ExtResource("2_l47ji")
+texture = ExtResource("2_pe3s2")
 
 [node name="Face" type="Sprite2D" parent="."]
 position = Vector2(75, 100)
-texture = ExtResource("3_5xc8k")
+texture = ExtResource("3_88h6o")
 
 [node name="Border" type="Sprite2D" parent="."]
 position = Vector2(75, 100)
 rotation = 1.5708
 texture = ExtResource("4_kwjgd")
+
+[node name="TipsHighlight" type="Sprite2D" parent="."]
+visible = false
+z_index = 200
+position = Vector2(75, 100)
+rotation = 1.5708
+texture = ExtResource("5_jimar")
 
 [node name="Select" type="Sprite2D" parent="."]
 visible = false
