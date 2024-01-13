@@ -41,6 +41,7 @@
             const messageInputDom = document.querySelector('#mjslt-message-input');
             const message = messageInputDom.value;
             mjsltSocket.send(JSON.stringify({
+                'type': 'message',
                 'message': message
             }));
             messageInputDom.value = '';

@@ -21,12 +21,19 @@ class MjsltConsumer(AsyncWebsocketConsumer):
     # Receive message from WebSocket
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        message = text_data_json["message"]
+
+        if 'type' not in text_data_json:
+            return
 
         # Send message to room group
-        await self.channel_layer.group_send(
-            self.room_group_name, {"type": "mjslt.message", "message": message}
-        )
+        if text_data_json["type"] == "message":
+            message = text_data_json["message"]
+            await self.channel_layer.group_send(
+                self.room_group_name, {"type": "mjslt.message", "message": message}
+            )
+        
+        if text_data_json["type"] == "mjslt":
+            print('mjslt')
 
     # Receive message from room group
     async def mjslt_message(self, event):
