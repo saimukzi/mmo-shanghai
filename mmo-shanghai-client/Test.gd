@@ -36,7 +36,8 @@ func _on_connect_pressed():
 func _on_msg_pressed():
 	print('_on_msg_pressed')
 	if self._websocket != null:
-		var err = self._websocket.send_text('{"type":"message","message":"asdf"}\n')
+		#var err = self._websocket.send_text('{"type":"message","message":"asdf"}\n')
+		var err = self._websocket.send_text('{"type":"message","message":"asdf"}')
 		print('connect_to_url ret = {0}'.format([err]))
 	pass # Replace with function body.
 
