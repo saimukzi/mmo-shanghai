@@ -1,0 +1,38 @@
+[gd_scene load_steps=2 format=3 uid="uid://dgrlh42pxxxjs"]
+
+[ext_resource type="Script" path="res://Test.gd" id="1_746n7"]
+
+[node name="Test" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_746n7")
+
+[node name="Connect" type="Button" parent="."]
+layout_mode = 0
+offset_left = 1.0
+offset_top = -2.0
+offset_right = 135.0
+offset_bottom = 51.0
+text = "Connect"
+
+[node name="Msg" type="Button" parent="."]
+offset_left = 3.0
+offset_top = 59.0
+offset_right = 137.0
+offset_bottom = 112.0
+text = "Msg"
+
+[node name="Disconnect" type="Button" parent="."]
+offset_left = 2.0
+offset_top = 119.0
+offset_right = 136.0
+offset_bottom = 172.0
+text = "Disconnect"
+
+[connection signal="pressed" from="Connect" to="." method="_on_connect_pressed"]
+[connection signal="pressed" from="Msg" to="." method="_on_msg_pressed"]
+[connection signal="pressed" from="Disconnect" to="." method="_on_disconnect_pressed"]
