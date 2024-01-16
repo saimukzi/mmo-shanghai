@@ -18,16 +18,16 @@ def gen_new_game_state():
     }
 
 
-def state_pick_tile_pair(state, tile_id0, tile_id1):
+def state_pick_tile_id_pair(state, tile_id0, tile_id1):
     if tile_id0 == tile_id1:
         return {'RESULT':'ERROR_SAME_TILE_ID', 'STATE':state}
-    if not state_exist_tile(state, tile_id0):
+    if not state_tile_id_exist(state, tile_id0):
         return {'RESULT':'ERROR_TILE_NOT_EXIST', 'STATE':state}
-    if not state_exist_tile(state, tile_id1):
+    if not state_tile_id_exist(state, tile_id1):
         return {'RESULT':'ERROR_TILE_NOT_EXIST', 'STATE':state}
-    if not state_is_tile_free(state, tile_id0):
+    if not state_tile_id_is_free(state, tile_id0):
         return {'RESULT':'ERROR_TILE_NOT_FREE', 'STATE':state} 
-    if not state_is_tile_free(state, tile_id1):
+    if not state_tile_id_is_free(state, tile_id1):
         return {'RESULT':'ERROR_TILE_NOT_FREE', 'STATE':state}
     tile0 = state_get_tile(state, tile_id0)
     tiletype0 = tile_get_tiletype(tile0)
@@ -42,14 +42,14 @@ def state_pick_tile_pair(state, tile_id0, tile_id1):
     return {'RESULT':'OK', 'STATE':state}
 
 
-def state_exist_tile(state, tile_id):
+def state_tile_id_exist(state, tile_id):
     for tile in state['TILE_LIST']:
         if tile_get_id(tile) == tile_id:
             return True
     return False
 
 
-def state_is_tile_free(state, tile_id):
+def state_tile_id_is_free(state, tile_id):
     tile = state_get_tile(state, tile_id)
     tilexyz = tile_get_tilexyz(tile)
 
@@ -168,6 +168,7 @@ TILE_Z_Y_X0_W_LIST = [
 def get_tilexyz_list():
     ret_tilexyz_list = []
     for z, y, x0, w in TILE_Z_Y_X0_W_LIST:
-        for x in range(x0, x0+w):
+        for xi in range(w):
+            x = x0 + xi
             ret_tilexyz_list.append([x,y,z])
     return ret_tilexyz_list
