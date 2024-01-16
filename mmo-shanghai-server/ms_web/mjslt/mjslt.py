@@ -2,75 +2,89 @@ import random
 
 EPSILON = 0.00001
 
-def gen_new_game_state():
-    tiletype_list = gen_new_game_tiletype_list()
-    tilexyz_list = get_tilexyz_list()
+def gen_new_game():
+    while True:
+        tiletype_list = gen_new_game_tiletype_list()
+        tilexyz_list = get_tilexyz_list()
 
-    assert(len(tiletype_list) == len(tilexyz_list))
+        assert(len(tiletype_list) == len(tilexyz_list))
 
-    tile_list_len = len(tiletype_list)
-    tile_list = []
-    for i in range(tile_list_len):
-        tile_list.append([i, *tiletype_list[i], *tilexyz_list[i]])
+        tile_list_len = len(tiletype_list)
+        tile_list = []
+        for i in range(tile_list_len):
+            tile_list.append([i, *tiletype_list[i], *tilexyz_list[i]])
+        
+        if not tile_list_exist_pair(tile_list):
+            print('regen')
+            continue
 
-    return {
-        'TILE_LIST': tile_list,
-    }
+        return {
+            'TILE_LIST': tile_list,
+            'STATE': 'PICK_PAIR',
+        }
 
 
-def state_pick_tile_id_pair(state, tile_id0, tile_id1):
-    if tile_id0 == tile_id1:
-        return {'RESULT':'ERROR_SAME_TILE_ID', 'STATE':state}
-    if not state_tile_id_exist(state, tile_id0):
-        return {'RESULT':'ERROR_TILE_NOT_EXIST', 'STATE':state}
-    if not state_tile_id_exist(state, tile_id1):
-        return {'RESULT':'ERROR_TILE_NOT_EXIST', 'STATE':state}
-    if not state_tile_id_is_free(state, tile_id0):
-        return {'RESULT':'ERROR_TILE_NOT_FREE', 'STATE':state} 
-    if not state_tile_id_is_free(state, tile_id1):
-        return {'RESULT':'ERROR_TILE_NOT_FREE', 'STATE':state}
-    tile0 = state_get_tile(state, tile_id0)
+def game_pick_tileid_pair(game, tileid0, tileid1):
+    if tileid0 == tileid1:
+        return {'RESULT':'ERROR_SAME_TILEID', 'GAME':game}
+    if not game_tileid_exist(game, tileid0):
+        return {'RESULT':'ERROR_TILE_NOT_EXIST', 'GAME':game}
+    if not game_tileid_exist(game, tileid1):
+        return {'RESULT':'ERROR_TILE_NOT_EXIST', 'GAME':game}
+    tile_list = game['TILE_LIST']
+    tile0 = tile_list_get_tile(tile_list, tileid0)
     tiletype0 = tile_get_tiletype(tile0)
-    tile1 = state_get_tile(state, tile_id1)
+    tile1 = tile_list_get_tile(tile_list, tileid1)
     tiletype1 = tile_get_tiletype(tile1)
+    if not tile_list_tile_is_free(tile_list, tile0):
+        return {'RESULT':'ERROR_TILE_NOT_FREE', 'GAME':game} 
+    if not tile_list_tile_is_free(tile_list, tile1):
+        return {'RESULT':'ERROR_TILE_NOT_FREE', 'GAME':game}
     if not tiletype_is_pair(tiletype0, tiletype1):
-        return {'RESULT':'ERROR_NOT_TILE_PAIR', 'STATE':state}
+        return {'RESULT':'ERROR_NOT_TILE_PAIR', 'GAME':game}
     
-    state_remove_tile(state, tile_id0)
-    state_remove_tile(state, tile_id1)
+    game_remove_tile(game, tileid0)
+    game_remove_tile(game, tileid1)
 
-    return {'RESULT':'OK', 'STATE':state}
+    if len(game['TILE_LIST']) == 0:
+        game['STATE'] = 'CLEAR'
+    elif not tile_list_exist_pair(game['TILE_LIST']):
+        game['STATE'] = 'NO_PAIR'
+    else:
+        game['STATE'] = 'PICK_PAIR'
+
+    return {'RESULT':'OK', 'GAME':game}
 
 
-def state_tile_id_exist(state, tile_id):
-    for tile in state['TILE_LIST']:
-        if tile_get_id(tile) == tile_id:
+def game_tileid_exist(game, tileid):
+    for tile in game['TILE_LIST']:
+        if tile_get_tileid(tile) == tileid:
             return True
     return False
 
 
-def state_tile_id_is_free(state, tile_id):
-    tile = state_get_tile(state, tile_id)
-    tilexyz = tile_get_tilexyz(tile)
+# def game_tileid_is_free(game, tileid):
+#     tile = game_get_tile(game, tileid)
+#     tilexyz = tile_get_tilexyz(tile)
 
-    exist_right = False
-    exist_left = False
+#     exist_right = False
+#     exist_left = False
 
-    for tile0 in state['TILE_LIST']:
-        if tile_get_id(tile0) == tile_id: continue
-        tilexyz0 = tile_get_tilexyz(tile0)
-        if tilexyz0[2] > tilexyz[2]:
-            if tilexyz[0] > tilexyz0[0] + 1 - EPSILON: continue
-            if tilexyz[0] < tilexyz0[0] - 1 + EPSILON: continue
-            if tilexyz[1] > tilexyz0[1] + 1 - EPSILON: continue
-            if tilexyz[1] < tilexyz0[1] - 1 + EPSILON: continue
-            return False
-        if tilexyz0[2] == tilexyz[2]:
-            exist_right = exist_right or tilexyz_is_leftright(tilexyz, tilexyz0)
-            exist_left = exist_left or tilexyz_is_leftright(tilexyz0, tilexyz)
-            if exist_right and exist_left:
-                return False
-    return True
+#     for tile0 in game['TILE_LIST']:
+#         if tile_get_tileid(tile0) == tileid: continue
+#         tilexyz0 = tile_get_tilexyz(tile0)
+#         if tilexyz0[2] > tilexyz[2]:
+#             if tilexyz[0] > tilexyz0[0] + 1 - EPSILON: continue
+#             if tilexyz[0] < tilexyz0[0] - 1 + EPSILON: continue
+#             if tilexyz[1] > tilexyz0[1] + 1 - EPSILON: continue
+#             if tilexyz[1] < tilexyz0[1] - 1 + EPSILON: continue
+#             return False
+#         if tilexyz0[2] == tilexyz[2]:
+#             exist_right = exist_right or tilexyz_is_leftright(tilexyz, tilexyz0)
+#             exist_left = exist_left or tilexyz_is_leftright(tilexyz0, tilexyz)
+#             if exist_right and exist_left:
+#                 return False
+#     return True
 
 
 def tilexyz_is_leftright(tilexyz0, tilexyz1):
@@ -81,7 +95,7 @@ def tilexyz_is_leftright(tilexyz0, tilexyz1):
     return True
 
 
-def tile_get_id(tile):
+def tile_get_tileid(tile):
     return tile[0]
 
 
@@ -93,17 +107,23 @@ def tile_get_tilexyz(tile):
     return tile[3:]
 
 
-def state_get_tile(state, tile_id):
-    for tile in state['TILE_LIST']:
-        if tile_get_id(tile) == tile_id:
+# def game_get_tile(game, tileid):
+#     for tile in game['TILE_LIST']:
+#         if tile_get_tileid(tile) == tileid:
+#             return tile
+#     assert(False)
+
+def tile_list_get_tile(tile_list, tileid):
+    for tile in tile_list:
+        if tile_get_tileid(tile) == tileid:
             return tile
     assert(False)
 
 
-def state_remove_tile(state, tile_id):
-    for i in range(len(state['TILE_LIST'])):
-        if tile_get_id(state['TILE_LIST'][i]) == tile_id:
-            state['TILE_LIST'].pop(i)
+def game_remove_tile(game, tileid):
+    for i in range(len(game['TILE_LIST'])):
+        if tile_get_tileid(game['TILE_LIST'][i]) == tileid:
+            game['TILE_LIST'].pop(i)
             return
     assert(False)
 
@@ -172,3 +192,47 @@ def get_tilexyz_list():
             x = x0 + xi
             ret_tilexyz_list.append([x,y,z])
     return ret_tilexyz_list
+
+
+def tile_list_exist_pair(tile_list):
+    free_tile_list = tile_list_get_free_tile_list(tile_list)
+    for tile0 in free_tile_list:
+        tiletype0 = tile_get_tiletype(tile0)
+        for tile1 in free_tile_list:
+            if tile_get_tileid(tile0) == tile_get_tileid(tile1): continue
+            tiletype1 = tile_get_tiletype(tile1)
+            if tiletype_is_pair(tiletype0, tiletype1):
+                return True
+    return False
+
+def tile_list_get_free_tile_list(tile_list):
+    free_tile_list = tile_list
+    free_tile_list = filter(lambda t: tile_list_tile_is_free(tile_list, t), free_tile_list)
+    free_tile_list = list(free_tile_list)
+    return free_tile_list
+
+
+def tile_list_tile_is_free(tile_list, tile):
+    tileid = tile_get_tileid(tile)
+    tilexyz = tile_get_tilexyz(tile)
+    x,y,z = tilexyz
+
+    exist_right = False
+    exist_left = False
+
+    for tile0 in tile_list:
+        if tile_get_tileid(tile0) == tileid: continue
+        tilexyz0 = tile_get_tilexyz(tile0)
+        x0,y0,z0 = tilexyz0
+        if z0 > z:
+            if x > x0 + 1 - EPSILON: continue
+            if x < x0 - 1 + EPSILON: continue
+            if y > y0 + 1 - EPSILON: continue
+            if y < y0 - 1 + EPSILON: continue
+            return False
+        if z0 == z:
+            exist_right = exist_right or tilexyz_is_leftright(tilexyz, tilexyz0)
+            exist_left = exist_left or tilexyz_is_leftright(tilexyz0, tilexyz)
+            if exist_right and exist_left:
+                return False
+    return True
