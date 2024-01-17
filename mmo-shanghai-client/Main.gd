@@ -1,4 +1,4 @@
-extends Node2D
+extends Control
 
 var rng = RandomNumberGenerator.new()
 var board_scene = preload("res://Board.tscn")
@@ -17,7 +17,7 @@ var board_node
 func start_game():
 	assert(board_node == null)
 	board_node = board_scene.instantiate()
-	board_node.status_no_pair.connect($StatusNoPair._on_board_status_no_pair)
+	#board_node.status_no_pair.connect($StatusNoPair._on_board_status_no_pair)
 	$GameSlot.add_child(board_node)
 	var seed = rng.randi()+rng.randi()<<32
 	board_node.init_new_game(seed)

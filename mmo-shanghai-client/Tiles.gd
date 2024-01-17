@@ -15,7 +15,7 @@ func _input(event):
 	if     event.get_class() == "InputEventMouseButton" \
 	   and event.button_index == MouseButton.MOUSE_BUTTON_LEFT \
 	   and not event.pressed:
-		print('asdf')
+		print('Board._input left unpressed')
 		mouse_done = false
 
 var tile_scene = preload("res://Tile.tscn")
