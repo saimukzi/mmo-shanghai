@@ -4,10 +4,24 @@
 [ext_resource type="Script" path="res://TilesTransform.gd" id="2_wo5kk"]
 [ext_resource type="Script" path="res://Tiles.gd" id="3_v58dd"]
 
-[node name="Board" type="Node2D"]
+[node name="Board" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
 script = ExtResource("1_ru6xi")
 
-[node name="TilesTransform" type="Node2D" parent="."]
+[node name="TilesTransform" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
 script = ExtResource("2_wo5kk")
 
 [node name="Tiles" type="Node2D" parent="TilesTransform"]
